@@ -85,7 +85,6 @@ function App() {
             await tx.wait();
             console.log("Investment successful:", tx.hash);
             
-            // Refresh data
             fetchTotalInvested();
             setInvestmentAmount("");
         } catch (error) {
@@ -109,8 +108,7 @@ function App() {
             const tx = await contract.withdraw();
             await tx.wait();
             console.log("Withdrawal successful:", tx.hash);
-            
-            // Refresh data
+
             fetchTotalInvested();
         } catch (error) {
             console.error("Error withdrawing:", error);
