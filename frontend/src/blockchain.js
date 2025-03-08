@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
-import DeFiInvestment from "./abis/DeFiInvestment.json"; // ✅ Updated import
+import DeFiInvestment from "./abis/DeFiInvestment.json";
 
-const contractAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"; // ✅ Your contract address
+const contractAddress = "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9";
 const abi = DeFiInvestment.abi;
 
 const getEthereumContract = async () => {
@@ -20,5 +20,4 @@ const getEthereumContract = async () => {
   }
 };
 
-// ✅ Ensure the function is exported correctly
 export default getEthereumContract;

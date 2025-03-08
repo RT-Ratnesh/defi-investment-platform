@@ -1,13 +1,17 @@
 import { ethers } from "ethers";
-import contractABI from "./contractABI.json"; // Ensure ABI is correctly imported
-const contractAddress = "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"; // Replace with actual deployed address
+import contractABI from "../artifacts/contracts/DeFiInvestment.sol/DeFiInvestment.json";
 
-export const getEthereumContract = async () => {
-  if (!window.ethereum) return null;
+const contractAddress = "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9";
 
-  const provider = new ethers.BrowserProvider(window.ethereum); // For reading data
-  const signer = await provider.getSigner(); // For transactions
-  const contract = new ethers.Contract(contractAddress, contractABI, provider);
-
-  return contract;
+const getEthereumContract = () => {
+  const { ethereum } = window;
+  if (!ethereum) {
+    console.log("MetaMask not found!");
+    return null;
+  }
+  const provider = new ethers.BrowserProvider(ethereum);
+  const signer = provider.getSigner();
+  return new ethers.Contract(contractAddress, contractABI.abi, signer);
 };
+
+export default getEthereumContract;
