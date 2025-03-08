@@ -2,7 +2,7 @@ const hre = require("hardhat");
 
 async function main() {
   const DeFiInvestment = await hre.ethers.getContractFactory("DeFiInvestment");
-  const defiInvestment = await DeFiInvestment.deploy(); // Deploys the contract
+  const defiInvestment = await DeFiInvestment.deploy();
 
   await defiInvestment.waitForDeployment();
 
