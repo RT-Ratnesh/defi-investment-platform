@@ -1,24 +1,44 @@
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
-import getEthereumContract from "./blockchain";
+import getEthereumContract, { getWalletAddress, formatEther, parseEther } from "./blockchain";
 import "./App.css";
 
+// Import components
+import Header from "./components/Header";
+import Stats from "./components/Stats";
+import InvestTab from "./components/InvestTab";
+import YieldFarmingTab from "./components/YieldFarmingTab";
+import PortfolioTab from "./components/PortfolioTab";
+import InvestorsList from "./components/InvestorsList";
+
 function App() {
-    const [investors, setInvestors] = useState([]);
-    const [investmentAmount, setInvestmentAmount] = useState("");
     const [account, setAccount] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-    const [totalInvested, setTotalInvested] = useState(0);
+    const [activeTab, setActiveTab] = useState("invest");
+    
+    // Portfolio state
+    const [portfolio, setPortfolio] = useState({
+        basicInvestment: 0,
+        yieldFarmingBalance: 0,
+        pendingRewards: 0,
+        pendingYieldFarmingRewards: 0,
+        totalValue: 0
+    });
+    
+    // Platform stats
+    const [stats, setStats] = useState({
+        totalInvested: 0,
+        totalYieldFarming: 0
+    });
 
     useEffect(() => {
         const connectWallet = async () => {
             try {
-                if (window.ethereum) {
-                    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-                    setAccount(accounts[0]);
-                } else {
-                    setError("Please install MetaMask to use this dApp");
+                const address = await getWalletAddress();
+                if (address) {
+                    setAccount(address);
+                    fetchPortfolio(address);
                 }
             } catch (error) {
                 console.error("Error connecting to wallet:", error);
@@ -27,162 +47,112 @@ function App() {
         };
 
         connectWallet();
-        fetchTotalInvested();
+        fetchPlatformStats();
     }, []);
 
-    const fetchInvestors = async () => {
-        setLoading(true);
-        setError("");
-        try {
-            const contract = await getEthereumContract();
-            if (!contract) {
-                setError("Failed to connect to the contract");
-                return;
-            }
-
-            const investorList = await contract.getInvestors();
-            setInvestors(investorList);
-            console.log("Investors:", investorList);
-        } catch (error) {
-            console.error("Error fetching investors:", error);
-            setError("Error fetching investors: " + error.message);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const fetchTotalInvested = async () => {
+    const fetchPortfolio = async (address) => {
+        if (!address) return;
+        
         try {
             const contract = await getEthereumContract();
             if (!contract) return;
 
-            const total = await contract.totalInvested();
-            setTotalInvested(ethers.formatEther(total));
-        } catch (error) {
-            console.error("Error fetching total invested:", error);
-        }
-    };
-
-    const invest = async () => {
-        if (!investmentAmount || parseFloat(investmentAmount) <= 0) {
-            setError("Please enter a valid investment amount");
-            return;
-        }
-
-        setLoading(true);
-        setError("");
-        try {
-            const contract = await getEthereumContract();
-            if (!contract) {
-                setError("Failed to connect to the contract");
-                return;
-            }
-
-            const tx = await contract.invest({
-                value: ethers.parseEther(investmentAmount)
+            // Use a simpler approach for now to avoid potential issues
+            const investments = await contract.investments(address);
+            const yieldFarmingBalance = await contract.yieldFarmingBalances(address);
+            const rewards = await contract.rewards(address);
+            
+            setPortfolio({
+                basicInvestment: formatEther(investments),
+                yieldFarmingBalance: formatEther(yieldFarmingBalance),
+                pendingRewards: formatEther(rewards),
+                pendingYieldFarmingRewards: "0.0", // We'll implement this calculation later
+                totalValue: formatEther(investments.add(yieldFarmingBalance).add(rewards))
             });
-            
-            await tx.wait();
-            console.log("Investment successful:", tx.hash);
-            
-            fetchTotalInvested();
-            setInvestmentAmount("");
         } catch (error) {
-            console.error("Error investing:", error);
-            setError("Error making investment: " + error.message);
-        } finally {
-            setLoading(false);
+            console.error("Error fetching portfolio:", error);
         }
     };
 
-    const withdraw = async () => {
-        setLoading(true);
-        setError("");
+    const fetchPlatformStats = async () => {
         try {
             const contract = await getEthereumContract();
-            if (!contract) {
-                setError("Failed to connect to the contract");
-                return;
-            }
+            if (!contract) return;
 
-            const tx = await contract.withdraw();
-            await tx.wait();
-            console.log("Withdrawal successful:", tx.hash);
-
-            fetchTotalInvested();
+            const totalInvested = await contract.totalInvested();
+            const totalYieldFarming = await contract.totalYieldFarming();
+            
+            setStats({
+                totalInvested: formatEther(totalInvested),
+                totalYieldFarming: formatEther(totalYieldFarming)
+            });
         } catch (error) {
-            console.error("Error withdrawing:", error);
-            setError("Error withdrawing funds: " + error.message);
-        } finally {
-            setLoading(false);
+            console.error("Error fetching platform stats:", error);
+        }
+    };
+
+    // Handler for refreshing data after transactions
+    const refreshData = () => {
+        fetchPlatformStats();
+        if (account) {
+            fetchPortfolio(account);
         }
     };
 
     return (
         <div className="app-container">
-            <header className="app-header">
-                <h1>DeFi Investment Platform</h1>
-                {account ? (
-                    <p className="account-info">Connected: {account.substring(0, 6)}...{account.substring(account.length - 4)}</p>
-                ) : (
-                    <button className="connect-button" onClick={() => window.ethereum.request({ method: 'eth_requestAccounts' })}>
-                        Connect Wallet
-                    </button>
-                )}
-            </header>
+            <Header 
+                account={account} 
+                setAccount={setAccount}
+            />
 
             <main className="app-main">
-                <div className="stats-container">
-                    <div className="stat-box">
-                        <h3>Total Invested</h3>
-                        <p>{totalInvested} ETH</p>
-                    </div>
-                </div>
+                <Stats stats={stats} portfolioValue={portfolio.totalValue} />
 
-                <div className="action-container">
-                    <div className="investment-form">
-                        <h2>Make an Investment</h2>
-                        <div className="input-group">
-                            <input
-                                type="number"
-                                placeholder="Amount in ETH"
-                                value={investmentAmount}
-                                onChange={(e) => setInvestmentAmount(e.target.value)}
-                                min="0"
-                                step="0.01"
-                            />
-                            <button onClick={invest} disabled={loading}>
-                                {loading ? "Processing..." : "Invest"}
-                            </button>
-                        </div>
-                    </div>
-
-                    <div className="withdrawal-section">
-                        <h2>Withdraw Funds</h2>
-                        <button onClick={withdraw} disabled={loading}>
-                            {loading ? "Processing..." : "Withdraw All Funds"}
+                <div className="tabs-container">
+                    <div className="tabs">
+                        <button 
+                            className={activeTab === 'invest' ? 'active' : ''} 
+                            onClick={() => setActiveTab('invest')}
+                        >
+                            Invest
+                        </button>
+                        <button 
+                            className={activeTab === 'yield' ? 'active' : ''} 
+                            onClick={() => setActiveTab('yield')}
+                        >
+                            Yield Farming
+                        </button>
+                        <button 
+                            className={activeTab === 'portfolio' ? 'active' : ''} 
+                            onClick={() => setActiveTab('portfolio')}
+                        >
+                            Portfolio
                         </button>
                     </div>
-                </div>
-
-                <div className="investors-section">
-                    <h2>Investors List</h2>
-                    <button onClick={fetchInvestors} disabled={loading}>
-                        {loading ? "Loading..." : "Refresh Investors"}
-                    </button>
                     
-                    {investors.length > 0 ? (
-                        <ul className="investors-list">
-                            {investors.map((investor, index) => (
-                                <li key={index} className="investor-item">
-                                    {investor}
-                                </li>
-                            ))}
-                        </ul>
-                    ) : (
-                        <p>No investors yet or click to load</p>
+                    {activeTab === 'invest' && (
+                        <InvestTab 
+                            account={account}
+                            refreshData={refreshData}
+                            portfolio={portfolio}
+                        />
+                    )}
+                    
+                    {activeTab === 'yield' && (
+                        <YieldFarmingTab 
+                            account={account}
+                            refreshData={refreshData}
+                            portfolio={portfolio}
+                        />
+                    )}
+                    
+                    {activeTab === 'portfolio' && (
+                        <PortfolioTab portfolio={portfolio} />
                     )}
                 </div>
+
+                <InvestorsList />
 
                 {error && <div className="error-message">{error}</div>}
             </main>
