@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EtherYield | DeFi Investment Platform</title>
+  <link rel="icon" href="logo.svg" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Base styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      background-color: #f8fafc;
+      color: #1e293b;
+      line-height: 1.5;
+    }
+
+    /* Layout */
+    .min-h-screen {
+      min-height: 100vh;
+    }
+
+    .max-w-7xl {
+      max-width: 80rem;
+    }
+
+    .mx-auto {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .px-4 {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+
+    .py-4 {
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+    }
+
+    .py-8 {
+      padding-top: 2rem;
+      padding-bottom: 2rem;
+    }
+
+    .py-16 {
+      padding-top: 4rem;
+      padding-bottom: 4rem;
+    }
+
+    .mt-10 {
+      margin-top: 2.5rem;
+    }
+
+    .mb-4 {
+      margin-bottom: 1rem;
+    }
+
+    .mb-6 {
+      margin-bottom: 1.5rem;
+    }
+
+    .mr-2 {
+      margin-right: 0.5rem;
+    }
+
+    .mr-3 {
+      margin-right: 0.75rem;
+    }
+
+    /* Flexbox */
+    .flex {
+      display: flex;
+    }
+
+    .items-center {
+      align-items: center;
+    }
+
+    .justify-between {
+      justify-content: space-between;
+    }
+
+    .justify-center {
+      justify-content: center;
+    }
+
+    .flex-1 {
+      flex: 1 1 0%;
+    }
+
+    .flex-col {
+      flex-direction: column;
+    }
+
+    /* Grid */
+    .grid {
+      display: grid;
+    }
+
+    .grid-cols-1 {
+      grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
+
+    .gap-6 {
+      gap: 1.5rem;
+    }
+
+    /* Typography */
+    .text-center {
+      text-align: center;
+    }
+
+    .text-2xl {
+      font-size: 1.5rem;
+    }
+
+    .text-3xl {
+      font-size: 1.875rem;
+    }
+
+    .text-lg {
+      font-size: 1.125rem;
+    }
+
+    .text-sm {
+      font-size: 0.875rem;
+    }
+
+    .text-xs {
+      font-size: 0.75rem;
+    }
+
+    .font-bold {
+      font-weight: 700;
+    }
+
+    .font-semibold {
+      font-weight: 600;
+    }
+
+    .font-medium {
+      font-weight: 500;
+    }
+
+    /* Colors */
+    .bg-white {
+      background-color: #ffffff;
+    }
+
+    .bg-primary-50 {
+      background-color: #eef2ff;
+    }
+
+    .bg-primary-100 {
+      background-color: #e0e7ff;
+    }
+
+    .bg-primary-500 {
+      background-color: #6366f1;
+    }
+
+    .bg-primary-600 {
+      background-color: #4f46e5;
+    }
+
+    .bg-secondary-500 {
+      background-color: #8b5cf6;
+    }
+
+    .bg-secondary-600 {
+      background-color: #7c3aed;
+    }
+
+    .bg-dark-50 {
+      background-color: #f8fafc;
+    }
+
+    .bg-dark-100 {
+      background-color: #f1f5f9;
+    }
+
+    .bg-dark-900 {
+      background-color: #0f172a;
+    }
+
+    .text-white {
+      color: #ffffff;
+    }
+
+    .text-primary-100 {
+      color: #e0e7ff;
+    }
+
+    .text-primary-600 {
+      color: #4f46e5;
+    }
+
+    .text-secondary-600 {
+      color: #7c3aed;
+    }
+
+    .text-dark-400 {
+      color: #94a3b8;
+    }
+
+    .text-dark-500 {
+      color: #64748b;
+    }
+
+    .text-dark-600 {
+      color: #475569;
+    }
+
+    .text-dark-700 {
+      color: #334155;
+    }
+
+    .text-dark-800 {
+      color: #1e293b;
+    }
+
+    .text-dark-900 {
+      color: #0f172a;
+    }
+
+    .text-accent-500 {
+      color: #10b981;
+    }
+
+    .text-red-500 {
+      color: #ef4444;
+    }
+
+    /* Backgrounds */
+    .bg-gradient-to-b {
+      background-image: linear-gradient(to bottom, #f8fafc, #f1f5f9);
+    }
+
+    .bg-gradient-to-r {
+      background-image: linear-gradient(to right, #4f46e5, #7c3aed);
+    }
+
+    /* Borders */
+    .rounded-xl {
+      border-radius: 0.75rem;
+    }
+
+    .rounded-lg {
+      border-radius: 0.5rem;
+    }
+
+    .rounded-full {
+      border-radius: 9999px;
+    }
+
+    .border-b {
+      border-bottom-width: 1px;
+    }
+
+    .border-dark-100 {
+      border-color: #f1f5f9;
+    }
+
+    .border-dark-200 {
+      border-color: #e2e8f0;
+    }
+
+    .border-dark-800 {
+      border-color: #1e293b;
+    }
+
+    .border-primary-600 {
+      border-color: #4f46e5;
+    }
+
+    /* Shadows */
+    .shadow-md {
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    .shadow-card {
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Components */
+    .card {
+      background-color: #ffffff;
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      transition: all 0.2s ease;
+    }
+
+    .card-hover:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    .btn {
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background-color: #4f46e5;
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      background-color: #4338ca;
+    }
+
+    .btn-secondary {
+      background-color: #e2e8f0;
+      color: #475569;
+    }
+
+    .btn-secondary:hover {
+      background-color: #cbd5e1;
+    }
+
+    .input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+    }
+
+    .input:focus {
+      outline: none;
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+    }
+
+    /* Animations */
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .animate-spin {
+      animation: spin 1s linear infinite;
+    }
+
+    /* Responsive */
+    @media (min-width: 768px) {
+      .md\:grid-cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      
+      .md\:grid-cols-3 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      
+      .md\:col-span-2 {
+        grid-column: span 2 / span 2;
+      }
+      
+      .md\:text-4xl {
+        font-size: 2.25rem;
+      }
+      
+      .md\:text-xl {
+        font-size: 1.25rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="min-h-screen bg-gradient-to-b">
+    <!-- Header -->
+    <header class="bg-white shadow-md">
+      <div class="max-w-7xl mx-auto px-4 py-4">
+        <div class="flex justify-between items-center">
+          <div class="flex items-center">
+            <img src="logo.svg" alt="EtherYield Logo" class="h-10 w-10 mr-3" />
+            <h1 class="text-2xl font-bold text-primary-600">EtherYield</h1>
+          </div>
+          <div>
+            <button class="btn btn-primary flex items-center">
+              <i class="fas fa-wallet mr-2"></i>
+              Connect Wallet
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <div class="bg-gradient-to-r text-white py-16">
+      <div class="max-w-7xl mx-auto px-4 text-center">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">Maximize Your ETH Returns</h2>
+        <p class="text-lg md:text-xl max-w-3xl mx-auto text-primary-100">
+          Invest your ETH and earn competitive returns through our secure decentralized platform
+        </p>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-8">
+      <!-- Stats Section -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="card card-hover">
+          <div class="flex items-center mb-2">
+            <i class="fas fa-chart-line text-primary-600 mr-2"></i>
+            <h3 class="text-dark-600 font-medium">Total Invested</h3>
+          </div>
+          <div class="flex items-baseline">
+            <p class="text-3xl font-bold text-dark-900">1.234</p>
+            <span class="ml-2 text-dark-600">ETH</span>
+          </div>
+          <div class="mt-2 text-sm text-dark-500">
+            Platform-wide investments
+          </div>
+        </div>
+        
+        <div class="card card-hover">
+          <div class="flex items-center mb-2">
+            <i class="fas fa-coins text-secondary-600 mr-2"></i>
+            <h3 class="text-dark-600 font-medium">Total Returns</h3>
+          </div>
+          <div class="flex items-baseline">
+            <p class="text-3xl font-bold text-dark-900">1.358</p>
+            <span class="ml-2 text-dark-600">ETH</span>
+            <span class="flex items-center text-accent-500 text-sm font-medium ml-2">
+              <i class="fas fa-arrow-up mr-1"></i>
+              10.05%
+            </span>
+          </div>
+          <div class="mt-2 text-sm text-dark-500 flex items-center">
+            <i class="fas fa-info-circle mr-1 text-dark-400"></i>
+            Investment + Projected Gains
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabs Section -->
+      <div class="mt-10 bg-white rounded-xl shadow-card overflow-hidden">
+        <div class="border-b border-dark-200">
+          <div class="flex">
+            <button class="px-6 py-4 text-sm font-medium flex items-center text-primary-600 border-b-2 border-primary-600">
+              <i class="fas fa-hand-holding-usd mr-2 text-primary-600"></i>
+              Invest
+            </button>
+            <button class="px-6 py-4 text-sm font-medium flex items-center text-dark-500 hover:text-dark-700 hover:bg-dark-50">
+              <i class="fas fa-chart-pie mr-2 text-dark-400"></i>
+              Portfolio
+            </button>
+          </div>
+        </div>
+        <div class="p-6">
+          <div class="max-w-md mx-auto">
+            <h2 class="text-xl font-bold text-dark-800 mb-4 flex items-center">
+              <i class="fas fa-hand-holding-usd text-primary-600 mr-2"></i>
+              Make an Investment
+            </h2>
+            
+            <div class="bg-primary-50 border-l-4 border-primary-500 p-4 rounded-r-lg mb-6">
+              <p class="text-primary-800 text-sm">
+                Invest your ETH and earn a 10% APY. Your funds will be used in our diversified investment strategies.
+              </p>
+            </div>
+            
+            <div class="mb-6">
+              <label for="amount" class="block text-sm font-medium text-dark-700 mb-2">
+                Investment Amount
+              </label>
+              <div class="relative rounded-md shadow-sm">
+                <input
+                  type="number"
+                  id="amount"
+                  class="input pr-12"
+                  placeholder="0.0"
+                  min="0"
+                  step="0.01"
+                />
+                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                  <span class="text-dark-500">ETH</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="flex space-x-4 mb-6">
+              <button class="btn btn-primary flex-1 flex justify-center items-center">
+                <i class="fas fa-arrow-circle-up mr-2"></i>
+                Invest
+              </button>
+              
+              <button class="btn btn-secondary flex-1 flex justify-center items-center">
+                <i class="fas fa-arrow-circle-down mr-2"></i>
+                Withdraw
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Investors List -->
+      <div class="mt-10">
+        <h3 class="text-xl font-bold text-dark-800 mb-4 flex items-center">
+          <i class="fas fa-users mr-2 text-primary-600"></i>
+          Top Investors
+        </h3>
+        <div class="bg-white rounded-xl shadow-card overflow-hidden">
+          <div class="flex justify-between items-center p-6 border-b border-dark-100">
+            <h3 class="text-lg font-semibold text-dark-800">Investors List</h3>
+            <button class="flex items-center text-sm text-primary-600 hover:text-primary-700 transition-colors">
+              <i class="fas fa-sync-alt mr-2"></i>
+              Refresh
+            </button>
+          </div>
+          
+          <div class="p-6">
+            <div class="divide-y divide-dark-100">
+              <div class="py-3 flex items-center">
+                <div class="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center mr-3">
+                  <i class="fas fa-user text-primary-600 text-sm"></i>
+                </div>
+                <div class="flex-1">
+                  <div class="font-medium text-dark-800">0x1234...5678</div>
+                  <div class="text-xs text-dark-500 mt-1">
+                    <a href="#" class="hover:text-primary-600 transition-colors">
+                      View on Etherscan <i class="fas fa-external-link-alt ml-1"></i>
+                    </a>
+                  </div>
+                </div>
+                <div class="text-dark-400">
+                  <i class="fas fa-chevron-right"></i>
+                </div>
+              </div>
+              <div class="py-3 flex items-center">
+                <div class="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center mr-3">
+                  <i class="fas fa-user text-primary-600 text-sm"></i>
+                </div>
+                <div class="flex-1">
+                  <div class="font-medium text-dark-800">0xabcd...ef01</div>
+                  <div class="text-xs text-dark-500 mt-1">
+                    <a href="#" class="hover:text-primary-600 transition-colors">
+                      View on Etherscan <i class="fas fa-external-link-alt ml-1"></i>
+                    </a>
+                  </div>
+                </div>
+                <div class="text-dark-400">
+                  <i class="fas fa-chevron-right"></i>
+                </div>
+              </div>
+              <div class="py-3 flex items-center">
+                <div class="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center mr-3">
+                  <i class="fas fa-user text-primary-600 text-sm"></i>
+                </div>
+                <div class="flex-1">
+                  <div class="font-medium text-dark-800">0x9876...5432</div>
+                  <div class="text-xs text-dark-500 mt-1">
+                    <a href="#" class="hover:text-primary-600 transition-colors">
+                      View on Etherscan <i class="fas fa-external-link-alt ml-1"></i>
+                    </a>
+                  </div>
+                </div>
+                <div class="text-dark-400">
+                  <i class="fas fa-chevron-right"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark-900 text-dark-300 py-12 mt-16">
+      <div class="max-w-7xl mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div>
+            <div class="flex items-center mb-4">
+              <img src="logo.svg" alt="EtherYield Logo" class="h-8 w-8 mr-2" />
+              <h3 class="text-xl font-bold text-white">EtherYield</h3>
+            </div>
+            <p class="text-dark-400 mb-4">
+              A decentralized platform for ETH investments with competitive returns and transparent operations.
+            </p>
+            <div class="flex space-x-4">
+              <a href="#" class="text-dark-400 hover:text-white transition-colors">
+                <i class="fab fa-twitter"></i>
+              </a>
+              <a href="#" class="text-dark-400 hover:text-white transition-colors">
+                <i class="fab fa-discord"></i>
+              </a>
+              <a href="#" class="text-dark-400 hover:text-white transition-colors">
+                <i class="fab fa-github"></i>
+              </a>
+            </div>
+          </div>
+          <div>
+            <h4 class="text-white font-medium mb-4">Resources</h4>
+            <ul class="space-y-2">
+              <li>
+                <a href="#" class="text-dark-400 hover:text-white transition-colors">Documentation</a>
+              </li>
+              <li>
+                <a href="#" class="text-dark-400 hover:text-white transition-colors">Smart Contracts</a>
+              </li>
+              <li>
+                <a href="#" class="text-dark-400 hover:text-white transition-colors">Audit Reports</a>
+              </li>
+              <li>
+                <a href="#" class="text-dark-400 hover:text-white transition-colors">FAQ</a>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="text-white font-medium mb-4">Legal</h4>
+            <ul class="space-y-2">
+              <li>
+                <a href="#" class="text-dark-400 hover:text-white transition-colors">Terms of Service</a>
+              </li>
+              <li>
+                <a href="#" class="text-dark-400 hover:text-white transition-colors">Privacy Policy</a>
+              </li>
+              <li>
+                <a href="#" class="text-dark-400 hover:text-white transition-colors">Risk Disclosure</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="border-t border-dark-800 mt-8 pt-8 text-center text-dark-500">
+          <p>&copy; 2023 EtherYield. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+</body>
+</html> 

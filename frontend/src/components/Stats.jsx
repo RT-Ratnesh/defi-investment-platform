@@ -1,43 +1,93 @@
 import React, { useState, useEffect } from 'react';
 
-function Stats({ stats, portfolioValue }) {
-    const [totalReturns, setTotalReturns] = useState(portfolioValue);
+const Stats = ({ stats, portfolio, portfolioValue, totalInvestedValue, marketTrend }) => {
+    const [totalReturns, setTotalReturns] = useState(totalInvestedValue || 0);
     
-    // Calculate total returns (investment + projected returns)
+    // Update total returns when market trend or total invested value changes
     useEffect(() => {
-        const calculateTotalReturns = () => {
-            // Base investment value
-            const investmentValue = parseFloat(portfolioValue) || 0;
+        if (totalInvestedValue > 0) {
+            // Get market percentage from props
+            const marketPercentage = marketTrend?.ethPriceChange || 1.2;
             
-            // Calculate projected returns (using a simple 10% APY with market fluctuation)
-            const marketFactor = 0.95 + (Math.random() * 0.3); // Random between 0.95 and 1.25
-            const projectedReturn = investmentValue * 0.1 * marketFactor; // 10% APY adjusted by market
+            // Calculate base investment
+            const baseInvestment = totalInvestedValue;
             
-            // Total returns = investment + projected returns
-            const total = (investmentValue + projectedReturn).toFixed(4);
-            setTotalReturns(total);
-        };
-        
-        calculateTotalReturns();
-        
-        // Update every 5 seconds to simulate market changes
-        const intervalId = setInterval(calculateTotalReturns, 5000);
-        
-        return () => clearInterval(intervalId);
-    }, [portfolioValue]);
-
+            // Calculate base returns (approximately 1% of investment)
+            const baseReturns = baseInvestment * 0.01;
+            
+            // Apply market trend to returns
+            const marketFactor = 1 + (marketPercentage / 100);
+            const adjustedReturns = baseReturns * marketFactor;
+            
+            // Calculate total value based on market trend
+            let totalWithReturns;
+            if (marketPercentage >= 0) {
+                totalWithReturns = baseInvestment + adjustedReturns;
+            } else {
+                totalWithReturns = baseInvestment - adjustedReturns;
+            }
+            
+            setTotalReturns(totalWithReturns);
+            
+            console.log("Stats updated with market trend:", {
+                baseInvestment,
+                baseReturns,
+                marketPercentage,
+                adjustedReturns,
+                totalWithReturns
+            });
+        }
+    }, [totalInvestedValue, marketTrend]);
+    
+    // Format number with commas
+    const formatNumber = (num) => {
+        if (num === 0 || isNaN(num)) return "0.0000";
+        return parseFloat(num).toFixed(4);
+    };
+    
+    // Get market percentage for display
+    const getMarketPercentage = () => {
+        return marketTrend?.ethPriceChange || 1.2;
+    };
+    
     return (
-        <div className="stats-container">
-            <div className="stat-box">
-                <h3>Total Invested</h3>
-                <p>{stats.totalInvested} ETH</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Total Invested */}
+            <div className="card">
+                <div className="card-body">
+                    <h3 className="text-lg font-medium text-gray mb-2">
+                        <i className="fas fa-coins mr-2"></i>
+                        Total Invested
+                    </h3>
+                    <p className="text-3xl font-bold">
+                        {formatNumber(stats.totalInvested)} ETH
+                    </p>
+                    <p className="text-sm text-gray mt-2">
+                        Platform-wide investment volume
+                    </p>
+                </div>
             </div>
-            <div className="stat-box">
-                <h3>Total Returns</h3>
-                <p>{totalReturns} ETH</p>
+            
+            {/* Total Returns */}
+            <div className="card">
+                <div className="card-body">
+                    <h3 className="text-lg font-medium text-gray mb-2">
+                        <i className="fas fa-chart-line mr-2"></i>
+                        Total Returns
+                    </h3>
+                    <p className="text-3xl font-bold text-indigo-600">
+                        {formatNumber(totalReturns)} ETH 
+                        <span className={getMarketPercentage() >= 0 ? "text-green-500 ml-2" : "text-red-500 ml-2"}>
+                            {getMarketPercentage().toFixed(2)}%
+                        </span>
+                    </p>
+                    <p className="text-sm text-gray mt-2">
+                        Based on current market conditions
+                    </p>
+                </div>
             </div>
         </div>
     );
-}
+};
 
 export default Stats;
