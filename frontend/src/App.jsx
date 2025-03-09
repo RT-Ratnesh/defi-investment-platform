@@ -7,7 +7,6 @@ import "./App.css";
 import Header from "./components/Header";
 import Stats from "./components/Stats";
 import InvestTab from "./components/InvestTab";
-import YieldFarmingTab from "./components/YieldFarmingTab";
 import PortfolioTab from "./components/PortfolioTab";
 import InvestorsList from "./components/InvestorsList";
 
@@ -20,16 +19,13 @@ function App() {
     // Portfolio state
     const [portfolio, setPortfolio] = useState({
         basicInvestment: 0,
-        yieldFarmingBalance: 0,
         pendingRewards: 0,
-        pendingYieldFarmingRewards: 0,
         totalValue: 0
     });
     
     // Platform stats
     const [stats, setStats] = useState({
-        totalInvested: 0,
-        totalYieldFarming: 0
+        totalInvested: 0
     });
 
     useEffect(() => {
@@ -57,17 +53,24 @@ function App() {
             const contract = await getEthereumContract();
             if (!contract) return;
 
-            // Use a simpler approach for now to avoid potential issues
+            // Fetch investments and rewards
             const investments = await contract.investments(address);
-            const yieldFarmingBalance = await contract.yieldFarmingBalances(address);
             const rewards = await contract.rewards(address);
             
+            // Convert to strings first, then to numbers for addition
+            const investmentsEth = formatEther(investments);
+            const rewardsEth = formatEther(rewards);
+            
+            // Calculate total value by adding the numeric values
+            const totalValue = (
+                parseFloat(investmentsEth) + 
+                parseFloat(rewardsEth)
+            ).toString();
+            
             setPortfolio({
-                basicInvestment: formatEther(investments),
-                yieldFarmingBalance: formatEther(yieldFarmingBalance),
-                pendingRewards: formatEther(rewards),
-                pendingYieldFarmingRewards: "0.0", // We'll implement this calculation later
-                totalValue: formatEther(investments.add(yieldFarmingBalance).add(rewards))
+                basicInvestment: investmentsEth,
+                pendingRewards: rewardsEth,
+                totalValue: totalValue
             });
         } catch (error) {
             console.error("Error fetching portfolio:", error);
@@ -80,11 +83,9 @@ function App() {
             if (!contract) return;
 
             const totalInvested = await contract.totalInvested();
-            const totalYieldFarming = await contract.totalYieldFarming();
             
             setStats({
-                totalInvested: formatEther(totalInvested),
-                totalYieldFarming: formatEther(totalYieldFarming)
+                totalInvested: formatEther(totalInvested)
             });
         } catch (error) {
             console.error("Error fetching platform stats:", error);
@@ -118,12 +119,6 @@ function App() {
                             Invest
                         </button>
                         <button 
-                            className={activeTab === 'yield' ? 'active' : ''} 
-                            onClick={() => setActiveTab('yield')}
-                        >
-                            Yield Farming
-                        </button>
-                        <button 
                             className={activeTab === 'portfolio' ? 'active' : ''} 
                             onClick={() => setActiveTab('portfolio')}
                         >
@@ -133,14 +128,6 @@ function App() {
                     
                     {activeTab === 'invest' && (
                         <InvestTab 
-                            account={account}
-                            refreshData={refreshData}
-                            portfolio={portfolio}
-                        />
-                    )}
-                    
-                    {activeTab === 'yield' && (
-                        <YieldFarmingTab 
                             account={account}
                             refreshData={refreshData}
                             portfolio={portfolio}

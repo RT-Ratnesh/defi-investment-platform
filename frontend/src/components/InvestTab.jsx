@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import getEthereumContract, { parseEther } from '../blockchain';
+import getEthereumContract, { parseEther, investWithGasEstimate } from '../blockchain';
+import TransactionStatus from './TransactionStatus';
 
 function InvestTab({ account, refreshData }) {
     const [investmentAmount, setInvestmentAmount] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const [txStatus, setTxStatus] = useState("");
 
     const invest = async () => {
         if (!investmentAmount || parseFloat(investmentAmount) <= 0) {
@@ -14,6 +16,8 @@ function InvestTab({ account, refreshData }) {
 
         setLoading(true);
         setError("");
+        setTxStatus("Initiating transaction...");
+        
         try {
             const contract = await getEthereumContract();
             if (!contract) {
@@ -21,18 +25,31 @@ function InvestTab({ account, refreshData }) {
                 return;
             }
 
-            const tx = await contract.invest({
-                value: parseEther(investmentAmount)
-            });
+            setTxStatus("Transaction pending...");
+            // Use the new function with better gas estimation
+            const tx = await investWithGasEstimate(contract, investmentAmount);
             
+            setTxStatus("Transaction submitted! Waiting for confirmation...");
             await tx.wait();
+            
+            setTxStatus("Investment successful!");
             console.log("Investment successful");
             
             refreshData();
             setInvestmentAmount("");
+            
+            // Clear success message after 5 seconds
+            setTimeout(() => {
+                setTxStatus("");
+            }, 5000);
         } catch (error) {
             console.error("Error investing:", error);
-            setError("Error making investment: " + error.message);
+            if (error.message.includes("insufficient funds")) {
+                setError("Insufficient funds in your wallet. Please add more ETH to cover the investment and gas fees.");
+            } else {
+                setError("Error making investment: " + error.message);
+            }
+            setTxStatus("");
         } finally {
             setLoading(false);
         }
@@ -81,12 +98,16 @@ function InvestTab({ account, refreshData }) {
                         {loading ? "Processing..." : "Invest"}
                     </button>
                 </div>
+                
+                {txStatus && <TransactionStatus status={txStatus} />}
+                
                 <div className="withdrawal-section">
                     <h3>Withdraw Investments</h3>
                     <button onClick={withdraw} disabled={loading || !account}>
                         {loading ? "Processing..." : "Withdraw All Funds"}
                     </button>
                 </div>
+                
                 {error && <div className="error-message">{error}</div>}
             </div>
         </div>

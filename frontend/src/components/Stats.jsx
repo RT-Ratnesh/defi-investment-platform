@@ -8,10 +8,6 @@ function Stats({ stats, portfolioValue }) {
                 <p>{stats.totalInvested} ETH</p>
             </div>
             <div className="stat-box">
-                <h3>Total in Yield Farming</h3>
-                <p>{stats.totalYieldFarming} ETH</p>
-            </div>
-            <div className="stat-box">
                 <h3>Your Portfolio</h3>
                 <p>{portfolioValue} ETH</p>
             </div>

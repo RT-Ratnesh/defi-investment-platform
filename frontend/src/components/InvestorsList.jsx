@@ -16,11 +16,27 @@ function InvestorsList() {
                 return;
             }
 
-            const investorList = await contract.getInvestors();
-            setInvestors(investorList);
+            try {
+                // Add explicit error handling for the getInvestors call
+                const investorList = await contract.getInvestors();
+                
+                // Filter out any invalid addresses (like zero address)
+                const validInvestors = investorList.filter(
+                    address => address && address !== '0x0000000000000000000000000000000000000000'
+                );
+                
+                setInvestors(validInvestors);
+                
+                if (validInvestors.length === 0) {
+                    setError("No investors found yet.");
+                }
+            } catch (contractError) {
+                console.error("Contract error:", contractError);
+                setError("Error retrieving investors from the contract. Please try again later.");
+            }
         } catch (error) {
             console.error("Error fetching investors:", error);
-            setError("Error fetching investors: " + error.message);
+            setError("Error connecting to blockchain: " + error.message);
         } finally {
             setLoading(false);
         }
@@ -42,9 +58,8 @@ function InvestorsList() {
                     ))}
                 </ul>
             ) : (
-                <p>No investors yet or click to load</p>
+                <p>{error || "No investors yet or click to load"}</p>
             )}
-            {error && <div className="error-message">{error}</div>}
         </div>
     );
 }

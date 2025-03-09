@@ -576,3 +576,107 @@ body {
   color: #721c24;
   border: 1px solid #f5c6cb;
 }
+
+/* Market analysis section */
+.market-analysis {
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 25px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.market-analysis h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #2c3e50;
+  font-size: 1.2rem;
+}
+
+.market-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.market-stat {
+  flex: 1;
+  min-width: 150px;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.market-stat span:first-child {
+  font-size: 0.9rem;
+  color: #6c757d;
+  margin-bottom: 5px;
+}
+
+.market-stat span:last-child {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.trend-up {
+  color: #27ae60;
+}
+
+.trend-down {
+  color: #e74c3c;
+}
+
+.trend-neutral {
+  color: #f39c12;
+}
+
+.sentiment-bullish {
+  color: #27ae60;
+}
+
+.sentiment-bearish {
+  color: #e74c3c;
+}
+
+.sentiment-neutral {
+  color: #f39c12;
+}
+
+.projected-return {
+  color: #3498db;
+}
+
+.potential-returns {
+  font-size: 1rem;
+  margin-top: 10px;
+  color: #6c757d;
+}
+
+.potential-returns .highlight {
+  color: #3498db;
+  font-weight: 600;
+}
+
+.timeframe {
+  font-size: 0.8rem;
+  color: #6c757d;
+  margin-left: 5px;
+}
+
+.returns-segment {
+  background-color: #3498db;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .market-stats {
+    flex-direction: column;
+  }
+  
+  .market-stat {
+    width: 100%;
+  }
+}
