@@ -1,17 +1,34 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { formatAddress } from '../blockchain';
+import { ThemeContext } from '../contexts/ThemeContext';
 
 const Header = ({ account, onConnectWallet }) => {
+    const { theme, toggleTheme } = useContext(ThemeContext);
+    
     return (
         <header className="header">
             <div className="container">
                 <div className="flex justify-between items-center">
-                    <a href="/" className="logo">
+                    <a href="/" className="logo-animated">
                         <img src="/logo.svg" alt="EtherYield Logo" />
-                        <span>EtherYield</span>
+                        <span className="logo-text">EtherYield</span>
                     </a>
                     
-                    <div>
+                    <div className="flex items-center gap-4">
+                        {/* Theme Toggle */}
+                        <div 
+                            className={`theme-toggle ${theme === 'light' ? 'light' : ''}`}
+                            onClick={toggleTheme}
+                        >
+                            <span className="toggle-icon">
+                                <i className="fas fa-moon"></i>
+                            </span>
+                            <span className="toggle-icon">
+                                <i className="fas fa-sun"></i>
+                            </span>
+                            <span className="toggle-circle"></span>
+                        </div>
+                        
                         {account.connected ? (
                             <div className="flex items-center gap-2">
                                 <span className="badge badge-primary">

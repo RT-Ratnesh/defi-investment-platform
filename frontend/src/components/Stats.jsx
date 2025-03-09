@@ -28,14 +28,6 @@ const Stats = ({ stats, portfolio, portfolioValue, totalInvestedValue, marketTre
             }
             
             setTotalReturns(totalWithReturns);
-            
-            console.log("Stats updated with market trend:", {
-                baseInvestment,
-                baseReturns,
-                marketPercentage,
-                adjustedReturns,
-                totalWithReturns
-            });
         }
     }, [totalInvestedValue, marketTrend]);
     
@@ -51,39 +43,34 @@ const Stats = ({ stats, portfolio, portfolioValue, totalInvestedValue, marketTre
     };
     
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fadeIn">
             {/* Total Invested */}
-            <div className="card">
-                <div className="card-body">
-                    <h3 className="text-lg font-medium text-gray mb-2">
-                        <i className="fas fa-coins mr-2"></i>
-                        Total Invested
-                    </h3>
-                    <p className="text-3xl font-bold">
-                        {formatNumber(stats.totalInvested)} ETH
-                    </p>
-                    <p className="text-sm text-gray mt-2">
-                        Platform-wide investment volume
-                    </p>
+            <div className="stat-card-minimal">
+                <div className="stat-title">
+                    <i className="fas fa-coins"></i>
+                    Total Invested
+                </div>
+                <div className="stat-value">
+                    {formatNumber(stats.totalInvested)} ETH
+                </div>
+                <div className="stat-desc">
+                    Platform-wide investment volume
                 </div>
             </div>
             
             {/* Total Returns */}
-            <div className="card">
-                <div className="card-body">
-                    <h3 className="text-lg font-medium text-gray mb-2">
-                        <i className="fas fa-chart-line mr-2"></i>
-                        Total Returns
-                    </h3>
-                    <p className="text-3xl font-bold text-indigo-600">
-                        {formatNumber(totalReturns)} ETH 
-                        <span className={getMarketPercentage() >= 0 ? "text-green-500 ml-2" : "text-red-500 ml-2"}>
-                            {getMarketPercentage().toFixed(2)}%
-                        </span>
-                    </p>
-                    <p className="text-sm text-gray mt-2">
-                        Based on current market conditions
-                    </p>
+            <div className="stat-card-minimal">
+                <div className="stat-title">
+                    <i className="fas fa-chart-line"></i>
+                    Total Returns
+                </div>
+                <div className="stat-value">
+                    {formatNumber(totalReturns)} ETH 
+                </div>
+                <div className="stat-desc">
+                    <span className={getMarketPercentage() >= 0 ? "trend-up" : "trend-down"}>
+                        {getMarketPercentage() > 0 ? "+" : ""}{getMarketPercentage().toFixed(2)}%
+                    </span> based on current market conditions
                 </div>
             </div>
         </div>

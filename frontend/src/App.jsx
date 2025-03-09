@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { ethers } from "ethers";
 import getEthereumContract, { formatEther, parseEther, connectWallet, checkWalletConnection, listenForAccountChanges } from "./blockchain";
 import Header from './components/Header';
@@ -9,10 +9,13 @@ import PortfolioTab from './components/PortfolioTab';
 import InvestorsList from './components/InvestorsList';
 import Footer from './components/Footer';
 import ToastContainer from './components/Toast';
+import { ThemeContext } from './contexts/ThemeContext';
 import './App.css';
 import './index.css';
 
 function App() {
+  const { theme } = useContext(ThemeContext);
+  
   // State variables
   const [account, setAccount] = useState({ connected: false });
   const [loading, setLoading] = useState(true);
@@ -215,7 +218,7 @@ function App() {
   };
 
   return (
-    <div className="App">
+    <div className={`App ${theme === 'dark' ? 'dark-theme' : ''}`}>
       <Header 
         account={account} 
         onConnectWallet={handleConnectWallet} 

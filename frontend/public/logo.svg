@@ -1,0 +1,43 @@
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="paint0_linear" x1="0" y1="0" x2="120" y2="120" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#6366F1"/>
+      <stop offset="50%" stop-color="#8B5CF6"/>
+      <stop offset="100%" stop-color="#A855F7"/>
+    </linearGradient>
+    <filter id="shadow" x="-5" y="-5" width="130" height="130" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.3"/>
+    </filter>
+    <linearGradient id="glow" x1="60" y1="30" x2="60" y2="90" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#E0E7FF"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background hexagon with gradient -->
+  <path d="M60 10L105 35V85L60 110L15 85V35L60 10Z" fill="url(#paint0_linear)" filter="url(#shadow)"/>
+  
+  <!-- Ethereum symbol -->
+  <path d="M60 30L85 50L60 70L35 50L60 30Z" fill="white" fill-opacity="0.9"/>
+  <path d="M60 75L85 55L60 90L35 55L60 75Z" fill="white" fill-opacity="0.7"/>
+  
+  <!-- Connecting lines with glow effect -->
+  <path d="M60 30V70" stroke="url(#glow)" stroke-width="2" stroke-linecap="round"/>
+  <path d="M35 50L35 55" stroke="url(#glow)" stroke-width="2" stroke-linecap="round"/>
+  <path d="M85 50L85 55" stroke="url(#glow)" stroke-width="2" stroke-linecap="round"/>
+  
+  <!-- Decorative elements -->
+  <circle cx="60" cy="30" r="3" fill="white"/>
+  <circle cx="60" cy="70" r="3" fill="white"/>
+  <circle cx="35" cy="50" r="3" fill="white"/>
+  <circle cx="85" cy="50" r="3" fill="white"/>
+  <circle cx="35" cy="55" r="3" fill="white"/>
+  <circle cx="85" cy="55" r="3" fill="white"/>
+  
+  <!-- Sparkle effects -->
+  <circle cx="45" cy="25" r="1.5" fill="white"/>
+  <circle cx="75" cy="25" r="1.5" fill="white"/>
+  <circle cx="30" cy="70" r="1.5" fill="white"/>
+  <circle cx="90" cy="70" r="1.5" fill="white"/>
+  <circle cx="60" cy="95" r="1.5" fill="white"/>
+</svg> 
